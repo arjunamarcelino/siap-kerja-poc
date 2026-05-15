@@ -120,7 +120,7 @@ export default function DashboardPage() {
           {/* Latest Analysis Results (if exists) */}
           {latestAnalysis ? (
             <Link
-              href="/dashboard/analyze"
+              href="/dashboard/results"
               className="group rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-blue-300 hover:bg-blue-50/30"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
@@ -169,12 +169,44 @@ export default function DashboardPage() {
                 Learning Roadmap
               </h3>
               <p className="mt-1 text-sm text-slate-600">
-                Follow your personalized roadmap to close skill gaps.
+                Analyze your CV first to get a personalized learning roadmap.
               </p>
-              <p className="mt-3 text-xs font-medium text-blue-600">
-                Coming soon
+              <p className="mt-3 text-xs font-medium text-slate-400">
+                Start by analyzing your CV
               </p>
             </div>
+          )}
+
+          {latestAnalysis && (
+            <Link
+              href="/dashboard/roadmap"
+              className="group rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-emerald-300 hover:bg-emerald-50/30"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="mt-4 font-semibold text-slate-900">
+                Learning Roadmap
+              </h3>
+              <p className="mt-1 text-sm text-slate-600">
+                Track your progress through the learning path.
+              </p>
+              <p className="mt-3 text-xs font-medium text-emerald-600 group-hover:text-emerald-700">
+                View Roadmap →
+              </p>
+            </Link>
           )}
 
           <div className="rounded-2xl border border-slate-200 bg-white p-6">

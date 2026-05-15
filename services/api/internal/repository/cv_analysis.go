@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 
 	"github.com/arjunamarcelino/siap-kerja-poc/services/api/internal/model"
@@ -91,4 +92,19 @@ func (r *CVAnalysisRepository) GetAnalysisByID(ctx context.Context, id, userID s
 		return nil, err
 	}
 	return a, nil
+}
+
+func (r *CVAnalysisRepository) GetRoadmapByID(ctx context.Context, id, userID string) (json.RawMessage, error) {
+	var roadmap json.RawMessage
+	err := r.db.QueryRow(ctx,
+		`SELECT roadmap FROM cv_analyses WHERE id = $1 AND user_id = $2`,
+		id, userID,
+	).Scan(&roadmap)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrAnalysisNotFound
+		}
+		return nil, err
+	}
+	return roadmap, nil
 }
