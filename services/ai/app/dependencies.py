@@ -1,4 +1,10 @@
+from functools import lru_cache
+
+import redis.asyncio as aioredis
+
 from app.config import Settings, get_settings
+from app.services.analysis_service import AnalysisService
+from app.services.llm_service import LLMService
 
 
 def get_app_settings() -> Settings:
@@ -14,3 +20,22 @@ async def get_db_session():
     declare the dependency in their signatures.
     """
     yield None
+
+
+@lru_cache
+def _get_llm_service() -> LLMService:
+    return LLMService(get_settings())
+
+
+@lru_cache
+def _get_redis_client():
+    settings = get_settings()
+    return aioredis.from_url(settings.redis_url)
+
+
+def get_analysis_service() -> AnalysisService:
+    """FastAPI dependency that returns the analysis service."""
+    return AnalysisService(
+        llm_service=_get_llm_service(),
+        redis_client=_get_redis_client(),
+    )
