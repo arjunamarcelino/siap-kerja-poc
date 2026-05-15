@@ -21,15 +21,18 @@ func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine 
 	// Repositories
 	userRepo := repository.NewUserRepository(db)
 	cvAnalysisRepo := repository.NewCVAnalysisRepository(db)
+	progressRepo := repository.NewRoadmapProgressRepository(db)
 
 	// Services
 	authService := service.NewAuthService(userRepo, cfg.JWTSecret)
 	cvAnalysisService := service.NewCVAnalysisService(cvAnalysisRepo, cfg.AIServiceURL)
+	progressService := service.NewRoadmapProgressService(progressRepo, cvAnalysisRepo)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler(db, rdb)
 	authHandler := handler.NewAuthHandler(authService)
 	cvAnalysisHandler := handler.NewCVAnalysisHandler(cvAnalysisService)
+	progressHandler := handler.NewRoadmapProgressHandler(progressService)
 
 	// Health check
 	r.GET("/health", healthHandler.Health)
@@ -53,6 +56,10 @@ func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine 
 		protected.POST("/ai/analyze-cv", cvAnalysisHandler.AnalyzeCV)
 		protected.GET("/ai/analyses", cvAnalysisHandler.GetAnalyses)
 		protected.GET("/ai/analyses/:id", cvAnalysisHandler.GetAnalysis)
+
+		// Roadmap progress routes
+		protected.GET("/ai/analyses/:id/progress", progressHandler.GetProgress)
+		protected.PATCH("/ai/analyses/:id/progress", progressHandler.ToggleProgress)
 	}
 
 	return r
