@@ -2,7 +2,6 @@ import asyncio
 import logging
 
 from fastapi import HTTPException
-from langchain_google_genai.chat_models import ChatGoogleGenerativeAIError
 
 from app.models.schemas import AnalysisResult
 from app.services.job_scraper import scrape_glints_jobs
@@ -52,13 +51,21 @@ class AnalysisService:
                 job_listings=job_listings,
                 target_role=target_role,
             )
-        except ChatGoogleGenerativeAIError as e:
+        except Exception as e:
             msg = str(e)
-            if "RESOURCE_EXHAUSTED" in msg or "429" in msg:
+            # Check the full exception chain for quota errors
+            cause = e.__cause__ or e
+            cause_msg = str(cause)
+            if any(
+                s in msg or s in cause_msg
+                for s in ("RESOURCE_EXHAUSTED", "429", "quota")
+            ):
+                logger.warning("AI quota exhausted: %s", msg)
                 raise HTTPException(
                     429,
                     "AI quota exceeded. Please wait a minute and try again.",
                 ) from e
+            logger.error("AI model error: %s", msg)
             raise HTTPException(
                 502, "AI model returned an error. Please try again."
             ) from e

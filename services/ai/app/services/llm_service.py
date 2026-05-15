@@ -1,6 +1,6 @@
 import logging
 
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from app.config import Settings
 from app.models.schemas import CVExtraction, GapAndRoadmap
@@ -52,13 +52,9 @@ class LLMService:
 
     def __init__(self, settings: Settings) -> None:
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             google_api_key=settings.google_api_key,
             temperature=0,
-        )
-        self.embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
-            google_api_key=settings.google_api_key,
         )
 
     async def extract_cv_data(self, cv_text: str) -> CVExtraction:
