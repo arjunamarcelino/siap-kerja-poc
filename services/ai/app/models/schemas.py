@@ -100,3 +100,16 @@ class AnalysisResult(BaseModel):
 
 class ErrorResponse(BaseModel):
     message: str
+
+
+class EmbedSkillsRequest(BaseModel):
+    skills: list[str] = Field(..., min_length=1, max_length=100)
+
+
+class SkillEmbeddingResult(BaseModel):
+    skill: str
+    embedding: list[float]
+
+
+class EmbedSkillsResponse(BaseModel):
+    embeddings: list[SkillEmbeddingResult]
