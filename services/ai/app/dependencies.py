@@ -39,6 +39,11 @@ def get_redis_client():
     return _get_redis_client()
 
 
+def get_llm_service() -> LLMService:
+    """FastAPI dependency that returns the LLM service singleton."""
+    return _get_llm_service()
+
+
 def get_analysis_service() -> AnalysisService:
     """FastAPI dependency that returns the analysis service."""
     return AnalysisService(

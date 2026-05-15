@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"sort"
 	"strings"
 	"time"
@@ -104,25 +105,14 @@ func (s *JobMatchingService) ComputeJobMatches(ctx context.Context, userID strin
 
 	effectiveSkills := mergeEffectiveSkills(cvSkills, progressMap)
 
-	// Step 3: Fetch job listings from database
-	listings, err := s.jobListingRepo.GetByRole(ctx, latestAnalysis.CareerAspiration)
+	// Step 3: Fetch jobs — try AI service (Jooble) first, fall back to DB
+	jobs, err := s.fetchJobsWithFallback(ctx, latestAnalysis.CareerAspiration)
 	if err != nil {
-		return nil, fmt.Errorf("fetch job listings: %w", err)
+		return nil, fmt.Errorf("fetch jobs: %w", err)
 	}
 
-	if len(listings) == 0 {
+	if len(jobs) == 0 {
 		return &model.JobMatchResponse{Matches: []model.JobMatchResult{}}, nil
-	}
-
-	// Convert to ScrapedJob for embedding compatibility
-	jobs := make([]model.ScrapedJob, len(listings))
-	for i, l := range listings {
-		jobs[i] = model.ScrapedJob{
-			Title:          l.Title,
-			Company:        l.Company,
-			RequiredSkills: l.RequiredSkills,
-			Description:    l.Description,
-		}
 	}
 
 	// Step 4-5: Ensure all skills have embeddings
@@ -175,6 +165,62 @@ func (s *JobMatchingService) ComputeJobMatches(ctx context.Context, userID strin
 	}
 
 	return &model.JobMatchResponse{Matches: results}, nil
+}
+
+// fetchJobsFromAI calls the Python AI service /scrape-jobs endpoint (Jooble).
+func (s *JobMatchingService) fetchJobsFromAI(ctx context.Context, role string) ([]model.ScrapedJob, error) {
+	endpoint := s.aiServiceURL + "/scrape-jobs?role=" + url.QueryEscape(role)
+	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("AI service unavailable: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("scrape-jobs returned status %d", resp.StatusCode)
+	}
+
+	var jobs []model.ScrapedJob
+	if err := json.NewDecoder(resp.Body).Decode(&jobs); err != nil {
+		return nil, fmt.Errorf("parse scrape-jobs response: %w", err)
+	}
+
+	return jobs, nil
+}
+
+// fetchJobsWithFallback tries AI service (Jooble) first, falls back to DB.
+func (s *JobMatchingService) fetchJobsWithFallback(ctx context.Context, role string) ([]model.ScrapedJob, error) {
+	// Try AI service first
+	aiJobs, err := s.fetchJobsFromAI(ctx, role)
+	if err != nil {
+		log.Printf("AI job fetch failed for role %q, falling back to DB: %v", role, err)
+	}
+	if len(aiJobs) > 0 {
+		return aiJobs, nil
+	}
+
+	// Fallback: read from seeded job_listings table
+	log.Printf("Falling back to DB job listings for role %q", role)
+	listings, err := s.jobListingRepo.GetByRole(ctx, role)
+	if err != nil {
+		return nil, fmt.Errorf("fetch DB job listings: %w", err)
+	}
+
+	jobs := make([]model.ScrapedJob, len(listings))
+	for i, l := range listings {
+		jobs[i] = model.ScrapedJob{
+			Title:          l.Title,
+			Company:        l.Company,
+			RequiredSkills: l.RequiredSkills,
+			Description:    l.Description,
+		}
+	}
+	return jobs, nil
 }
 
 func mergeEffectiveSkills(cvSkills []string, progressMap map[string]*skillProgress) []string {
