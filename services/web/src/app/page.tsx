@@ -1,25 +1,26 @@
 import Link from "next/link";
+import { FadeIn } from "@/components/fade-in";
 
 function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-lg dark:border-slate-800/60 dark:bg-slate-950/80">
+    <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-lg">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-slate-900 dark:text-white"
+          className="text-xl font-bold tracking-tight text-slate-900"
         >
           Siap<span className="text-blue-600">Kerja</span>
         </Link>
         <div className="hidden items-center gap-8 md:flex">
           <a
             href="#features"
-            className="text-sm text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            className="text-sm text-slate-600 transition-colors hover:text-slate-900"
           >
             Features
           </a>
           <a
             href="#how-it-works"
-            className="text-sm text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            className="text-sm text-slate-600 transition-colors hover:text-slate-900"
           >
             How It Works
           </a>
@@ -37,39 +38,49 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 px-6 py-24 md:py-32 lg:py-40">
-      <div className="pointer-events-none absolute inset-0 opacity-30">
-        <div className="absolute -top-24 right-1/4 h-96 w-96 rounded-full bg-blue-500 blur-[128px]" />
-        <div className="absolute bottom-0 left-1/4 h-72 w-72 rounded-full bg-indigo-500 blur-[128px]" />
+    <section className="relative overflow-hidden bg-white px-6 py-24 md:py-32 lg:py-40">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-blue-100/50 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 h-[400px] w-[400px] rounded-full bg-indigo-100/50 blur-3xl" />
       </div>
       <div className="relative mx-auto max-w-4xl text-center">
-        <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-blue-400">
-          AI-Powered Career Navigation
-        </p>
-        <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-          Navigate Your Career{" "}
-          <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-            with AI
-          </span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-300 md:text-xl">
-          Upload your CV, discover your skill gaps, and get a personalized
-          roadmap to your dream career — powered by real job market data.
-        </p>
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Link
-            href="/register"
-            className="inline-flex h-12 items-center rounded-full bg-blue-600 px-8 text-base font-semibold text-white shadow-lg shadow-blue-600/30 transition-all hover:bg-blue-500 hover:shadow-blue-500/40"
-          >
-            Get Started Free
-          </Link>
-          <a
-            href="#features"
-            className="inline-flex h-12 items-center rounded-full border border-slate-600 px-8 text-base font-medium text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
-          >
-            Learn More
-          </a>
-        </div>
+        <FadeIn>
+          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-blue-600" />
+            AI-Powered Career Navigation
+          </div>
+        </FadeIn>
+        <FadeIn delay={100}>
+          <h1 className="text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl md:text-6xl lg:text-7xl">
+            Navigate Your Career
+            <br />
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              with AI
+            </span>
+          </h1>
+        </FadeIn>
+        <FadeIn delay={200}>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 md:text-xl">
+            Upload your CV, discover your skill gaps, and get a personalized
+            roadmap to your dream career — powered by real job market data.
+          </p>
+        </FadeIn>
+        <FadeIn delay={300}>
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Link
+              href="/register"
+              className="inline-flex h-12 items-center rounded-full bg-blue-600 px-8 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-700 hover:shadow-blue-700/30"
+            >
+              Get Started Free
+            </Link>
+            <a
+              href="#features"
+              className="inline-flex h-12 items-center rounded-full border border-slate-300 bg-white px-8 text-base font-medium text-slate-700 transition-all hover:border-slate-400 hover:bg-slate-50"
+            >
+              Learn More
+            </a>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -83,18 +94,20 @@ function Stats() {
   ];
 
   return (
-    <section className="border-b border-slate-200 bg-white px-6 py-12 dark:border-slate-800 dark:bg-slate-950">
-      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
-        {stats.map((stat) => (
-          <div key={stat.label} className="text-center">
-            <p className="text-3xl font-bold text-blue-600 md:text-4xl">
-              {stat.value}
-            </p>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              {stat.label}
-            </p>
+    <section className="border-y border-slate-100 bg-slate-50/50 px-6 py-14">
+      <div className="mx-auto max-w-5xl">
+        <FadeIn>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl font-bold text-blue-600 md:text-4xl">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">{stat.label}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        </FadeIn>
       </div>
     </section>
   );
@@ -105,7 +118,7 @@ function Problems() {
     {
       icon: (
         <svg
-          className="h-7 w-7"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -125,7 +138,7 @@ function Problems() {
     {
       icon: (
         <svg
-          className="h-7 w-7"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -145,7 +158,7 @@ function Problems() {
     {
       icon: (
         <svg
-          className="h-7 w-7"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -165,33 +178,34 @@ function Problems() {
   ];
 
   return (
-    <section className="bg-slate-50 px-6 py-20 dark:bg-slate-900 md:py-28">
+    <section className="bg-white px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">
-            The Skill-Gap Paradox
-          </h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-            Fresh graduates and career switchers face three major hurdles that
-            keep them from landing their dream jobs.
-          </p>
-        </div>
-        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-          {problems.map((problem) => (
-            <div
-              key={problem.title}
-              className="rounded-2xl border border-slate-200 bg-white p-8 dark:border-slate-700 dark:bg-slate-800"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400">
-                {problem.icon}
+        <FadeIn>
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+              The Skill-Gap Paradox
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">
+              Fresh graduates and career switchers face three major hurdles that
+              keep them from landing their dream jobs.
+            </p>
+          </div>
+        </FadeIn>
+        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {problems.map((problem, i) => (
+            <FadeIn key={problem.title} delay={i * 100}>
+              <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200/60 transition-shadow hover:shadow-md">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                  {problem.icon}
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                  {problem.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {problem.description}
+                </p>
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">
-                {problem.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                {problem.description}
-              </p>
-            </div>
+            </FadeIn>
           ))}
         </div>
       </div>
@@ -204,7 +218,7 @@ function Features() {
     {
       icon: (
         <svg
-          className="h-7 w-7"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -224,7 +238,7 @@ function Features() {
     {
       icon: (
         <svg
-          className="h-7 w-7"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -244,7 +258,7 @@ function Features() {
     {
       icon: (
         <svg
-          className="h-7 w-7"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -264,39 +278,37 @@ function Features() {
   ];
 
   return (
-    <section
-      id="features"
-      className="bg-white px-6 py-20 dark:bg-slate-950 md:py-28"
-    >
+    <section id="features" className="bg-slate-50/50 px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
-            Features
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">
-            How SiapKerja Helps You
-          </h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-            From CV analysis to job placement — an end-to-end AI-powered career
-            navigation system.
-          </p>
-        </div>
-        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-8 transition-shadow hover:shadow-lg dark:border-slate-700 dark:bg-slate-900"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
-                {feature.icon}
+        <FadeIn>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+              Features
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+              How SiapKerja Helps You
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">
+              From CV analysis to job placement — an end-to-end AI-powered
+              career navigation system.
+            </p>
+          </div>
+        </FadeIn>
+        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {features.map((feature, i) => (
+            <FadeIn key={feature.title} delay={i * 100}>
+              <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200/60 transition-all hover:-translate-y-1 hover:shadow-md">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  {feature.icon}
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                {feature.description}
-              </p>
-            </div>
+            </FadeIn>
           ))}
         </div>
       </div>
@@ -333,35 +345,36 @@ function HowItWorks() {
   ];
 
   return (
-    <section
-      id="how-it-works"
-      className="bg-slate-50 px-6 py-20 dark:bg-slate-900 md:py-28"
-    >
+    <section id="how-it-works" className="bg-white px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
-            How It Works
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">
-            Your Journey to Career Readiness
-          </h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-            Four simple steps from where you are to where you want to be.
-          </p>
-        </div>
+        <FadeIn>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+              How It Works
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+              Your Journey to Career Readiness
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">
+              Four simple steps from where you are to where you want to be.
+            </p>
+          </div>
+        </FadeIn>
         <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step) => (
-            <div key={step.step} className="flex flex-col">
-              <span className="text-5xl font-bold text-blue-600/20 dark:text-blue-400/20">
-                {step.step}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold text-slate-900 dark:text-white">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                {step.description}
-              </p>
-            </div>
+          {steps.map((step, i) => (
+            <FadeIn key={step.step} delay={i * 120}>
+              <div className="relative flex flex-col rounded-2xl bg-slate-50 p-6">
+                <span className="text-5xl font-bold text-blue-600/15">
+                  {step.step}
+                </span>
+                <h3 className="mt-3 text-lg font-semibold text-slate-900">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {step.description}
+                </p>
+              </div>
+            </FadeIn>
           ))}
         </div>
       </div>
@@ -371,24 +384,30 @@ function HowItWorks() {
 
 function CTASection() {
   return (
-    <section className="bg-gradient-to-br from-blue-600 to-indigo-700 px-6 py-20 md:py-28">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Ready to Start Your Career Journey?
-        </h2>
-        <p className="mt-4 text-lg text-blue-100">
-          Join SiapKerja and get a personalized career roadmap based on real job
-          market demand. Your dream career is closer than you think.
-        </p>
-        <Link
-          href="/register"
-          className="mt-8 inline-flex h-12 items-center rounded-full bg-white px-8 text-base font-semibold text-blue-700 shadow-lg transition-all hover:bg-blue-50"
-        >
-          Get Started Free
-        </Link>
-        <p className="mt-4 text-sm text-blue-200">
-          Free to get started. No credit card required.
-        </p>
+    <section className="relative overflow-hidden bg-blue-600 px-6 py-20 md:py-28">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-blue-500/50 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-indigo-500/50 blur-3xl" />
+      </div>
+      <div className="relative mx-auto max-w-3xl text-center">
+        <FadeIn>
+          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Ready to Start Your Career Journey?
+          </h2>
+          <p className="mt-4 text-lg text-blue-100">
+            Join SiapKerja and get a personalized career roadmap based on real
+            job market demand. Your dream career is closer than you think.
+          </p>
+          <Link
+            href="/register"
+            className="mt-8 inline-flex h-12 items-center rounded-full bg-white px-8 text-base font-semibold text-blue-700 shadow-lg transition-all hover:bg-blue-50 hover:shadow-xl"
+          >
+            Get Started Free
+          </Link>
+          <p className="mt-4 text-sm text-blue-200">
+            Free to get started. No credit card required.
+          </p>
+        </FadeIn>
       </div>
     </section>
   );
@@ -396,18 +415,18 @@ function CTASection() {
 
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-6 py-12 dark:border-slate-800 dark:bg-slate-950">
+    <footer className="border-t border-slate-100 bg-white px-6 py-12">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <div>
-            <p className="text-lg font-bold text-slate-900 dark:text-white">
+            <p className="text-lg font-bold text-slate-900">
               Siap<span className="text-blue-600">Kerja</span>
             </p>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-sm text-slate-500">
               AI-powered Career Navigation based on Real Job Market Demand
             </p>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-slate-500">
             &copy; 2026 SiapKerja. Built by Team Susah Banget Cari Kerja
             Sekarang.
           </p>
