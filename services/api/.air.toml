@@ -1,0 +1,9 @@
+[build]
+  cmd = "go build -o ./tmp/main ./cmd/server"
+  bin = "./tmp/main"
+  include_ext = ["go"]
+  exclude_dir = ["tmp", "vendor"]
+  exclude_regex = ["_test\\.go$"]
+  delay = 1000
+  poll = true
+  poll_interval = 500
