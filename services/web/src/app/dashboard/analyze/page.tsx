@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import {
@@ -25,7 +24,6 @@ const LOADING_MESSAGES = [
 ];
 
 export default function AnalyzePage() {
-  const router = useRouter();
   const [state, setState] = useState<PageState>({ status: "idle" });
   const [file, setFile] = useState<File | null>(null);
   const [career, setCareer] = useState<CareerRole | "">("");
@@ -257,7 +255,7 @@ export default function AnalyzePage() {
                 className="flex h-14 w-full items-center justify-center rounded-lg bg-blue-600 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {state.status === "uploading" ? (
-                  <LoadingStepper message={loadingMessage} />
+                  <LoadingStepper />
                 ) : (
                   "Analyze My CV"
                 )}
@@ -276,7 +274,7 @@ export default function AnalyzePage() {
   );
 }
 
-function LoadingStepper({ message }: { message: string }) {
+function LoadingStepper() {
   return (
     <span className="flex items-center gap-2">
       <svg
