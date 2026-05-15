@@ -10,6 +10,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"time"
 
 	"github.com/arjunamarcelino/siap-kerja-poc/services/api/internal/model"
@@ -59,7 +60,12 @@ func (s *CVAnalysisService) Analyze(
 	var buf bytes.Buffer
 	writer := multipart.NewWriter(&buf)
 
-	part, err := writer.CreateFormFile("file", filename)
+	// CreateFormFile defaults to application/octet-stream, but the AI service
+	// expects application/pdf. Create the part manually with the correct MIME type.
+	partHeader := make(textproto.MIMEHeader)
+	partHeader.Set("Content-Disposition", fmt.Sprintf(`form-data; name="file"; filename="%s"`, filename))
+	partHeader.Set("Content-Type", "application/pdf")
+	part, err := writer.CreatePart(partHeader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create form file: %w", err)
 	}

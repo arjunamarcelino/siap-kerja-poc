@@ -83,7 +83,7 @@ export default function AnalyzePage() {
 
     const controller = new AbortController();
     abortRef.current = controller;
-    const timeout = setTimeout(() => controller.abort(), 90_000);
+    const timeout = setTimeout(() => controller.abort(), 120_000);
 
     try {
       const formData = new FormData();
