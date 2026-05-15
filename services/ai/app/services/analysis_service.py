@@ -4,7 +4,7 @@ import logging
 from fastapi import HTTPException
 
 from app.models.schemas import AnalysisResult
-from app.services.job_scraper import scrape_glints_jobs
+from app.services.job_scraper import fetch_jooble_jobs
 from app.services.llm_service import LLMService
 from app.services.pdf_parser import PDFParseError, extract_text_from_pdf
 
@@ -30,7 +30,11 @@ class AnalysisService:
         try:
             cv_text, job_listings = await asyncio.gather(
                 asyncio.to_thread(extract_text_from_pdf, pdf_bytes),
-                scrape_glints_jobs(target_role, redis_client=self.redis_client),
+                fetch_jooble_jobs(
+                    target_role,
+                    redis_client=self.redis_client,
+                    llm_service=self.llm_service,
+                ),
             )
         except PDFParseError as e:
             raise HTTPException(422, f"Failed to parse PDF: {e}") from e

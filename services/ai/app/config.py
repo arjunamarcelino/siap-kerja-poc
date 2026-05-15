@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     google_api_key: str
     database_url: str
     redis_url: str = "redis://localhost:6379"
+    jooble_api_key: str = ""
 
     model_config = SettingsConfigDict(extra="ignore")
 

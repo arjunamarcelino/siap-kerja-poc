@@ -11,7 +11,9 @@ import (
 
 	"github.com/arjunamarcelino/siap-kerja-poc/services/api/internal/config"
 	"github.com/arjunamarcelino/siap-kerja-poc/services/api/internal/router"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	pgvec "github.com/pgvector/pgvector-go/pgx"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -21,8 +23,15 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Connect to PostgreSQL
-	dbpool, err := pgxpool.New(ctx, cfg.DatabaseURL)
+	// Connect to PostgreSQL with pgvector support
+	poolConfig, err := pgxpool.ParseConfig(cfg.DatabaseURL)
+	if err != nil {
+		log.Fatalf("Unable to parse database URL: %v", err)
+	}
+	poolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		return pgvec.RegisterTypes(ctx, conn)
+	}
+	dbpool, err := pgxpool.NewWithConfig(ctx, poolConfig)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}

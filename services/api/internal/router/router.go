@@ -22,17 +22,21 @@ func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine 
 	userRepo := repository.NewUserRepository(db)
 	cvAnalysisRepo := repository.NewCVAnalysisRepository(db)
 	progressRepo := repository.NewRoadmapProgressRepository(db)
+	skillRepo := repository.NewSkillRepository(db)
+	jobListingRepo := repository.NewJobListingRepository(db)
 
 	// Services
 	authService := service.NewAuthService(userRepo, cfg.JWTSecret)
 	cvAnalysisService := service.NewCVAnalysisService(cvAnalysisRepo, cfg.AIServiceURL)
 	progressService := service.NewRoadmapProgressService(progressRepo, cvAnalysisRepo)
+	jobMatchingService := service.NewJobMatchingService(skillRepo, cvAnalysisRepo, progressRepo, jobListingRepo, cfg.AIServiceURL)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler(db, rdb)
 	authHandler := handler.NewAuthHandler(authService)
 	cvAnalysisHandler := handler.NewCVAnalysisHandler(cvAnalysisService)
 	progressHandler := handler.NewRoadmapProgressHandler(progressService)
+	jobMatchingHandler := handler.NewJobMatchingHandler(jobMatchingService)
 
 	// Health check
 	r.GET("/health", healthHandler.Health)
@@ -60,6 +64,9 @@ func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine 
 		// Roadmap progress routes
 		protected.GET("/ai/analyses/:id/progress", progressHandler.GetProgress)
 		protected.PATCH("/ai/analyses/:id/progress", progressHandler.ToggleProgress)
+
+		// Job matching routes
+		protected.GET("/job-matches", jobMatchingHandler.GetJobMatches)
 	}
 
 	return r
