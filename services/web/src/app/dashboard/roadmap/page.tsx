@@ -36,44 +36,6 @@ export default function RoadmapPage() {
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
   const [patchError, setPatchError] = useState<string | null>(null);
 
-  // Initial load
-  useEffect(() => {
-    const controller = new AbortController();
-
-    apiFetch<{ data: AnalysisResult[] }>("/api/ai/analyses", {
-      signal: controller.signal,
-    })
-      .then((res) => {
-        if (controller.signal.aborted) return;
-        if (!res.data || res.data.length === 0) {
-          setState({ status: "empty" });
-          return;
-        }
-        const latest = res.data[0];
-        setState({
-          status: "loading-progress",
-          analysisId: latest.id,
-          analyses: res.data,
-        });
-        fetchProgress(latest.id, res.data);
-      })
-      .catch((err) => {
-        if (controller.signal.aborted) return;
-        setState({
-          status: "error",
-          message: err instanceof Error ? err.message : "Failed to load data",
-        });
-      });
-
-    return () => {
-      controller.abort();
-      progressFetchAbortRef.current?.abort();
-      patchAbortRef.current?.abort();
-      if (patchTimerRef.current) clearTimeout(patchTimerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   function fetchProgress(analysisId: string, analyses?: AnalysisResult[]) {
     progressFetchAbortRef.current?.abort();
     const controller = new AbortController();
@@ -117,6 +79,43 @@ export default function RoadmapPage() {
         });
       });
   }
+
+  // Initial load
+  useEffect(() => {
+    const controller = new AbortController();
+
+    apiFetch<{ data: AnalysisResult[] }>("/api/ai/analyses", {
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (controller.signal.aborted) return;
+        if (!res.data || res.data.length === 0) {
+          setState({ status: "empty" });
+          return;
+        }
+        const latest = res.data[0];
+        setState({
+          status: "loading-progress",
+          analysisId: latest.id,
+          analyses: res.data,
+        });
+        fetchProgress(latest.id, res.data);
+      })
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        setState({
+          status: "error",
+          message: err instanceof Error ? err.message : "Failed to load data",
+        });
+      });
+
+    return () => {
+      controller.abort();
+      progressFetchAbortRef.current?.abort();
+      patchAbortRef.current?.abort();
+      if (patchTimerRef.current) clearTimeout(patchTimerRef.current);
+    };
+  }, []);
 
   function handleAnalysisChange(newId: string) {
     // Abort in-flight requests and cancel pending timers
