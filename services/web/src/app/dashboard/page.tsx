@@ -120,7 +120,7 @@ export default function DashboardPage() {
           {/* Latest Analysis Results (if exists) */}
           {latestAnalysis ? (
             <Link
-              href="/dashboard/analyze"
+              href="/dashboard/roadmap"
               className="group rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-blue-300 hover:bg-blue-50/30"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
