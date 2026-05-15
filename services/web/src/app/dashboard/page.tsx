@@ -36,7 +36,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center font-sans">
-        <p className="text-slate-500 dark:text-slate-400">Loading...</p>
+        <p className="text-slate-500">Loading...</p>
       </div>
     );
   }
@@ -45,14 +45,14 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col font-sans">
-      <header className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+      <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <p className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <p className="text-xl font-bold tracking-tight text-slate-900">
             Siap<span className="text-blue-600">Kerja</span>
           </p>
           <button
             onClick={handleLogout}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
             Log out
           </button>
@@ -60,16 +60,16 @@ export default function DashboardPage() {
       </header>
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-10">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-slate-900">
           Welcome, {user.full_name}
         </h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-400">
+        <p className="mt-2 text-slate-600">
           Your AI-powered career dashboard
         </p>
 
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
               <svg
                 className="h-5 w-5"
                 fill="none"
@@ -84,10 +84,10 @@ export default function DashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="mt-4 font-semibold text-slate-900 dark:text-white">
+            <h3 className="mt-4 font-semibold text-slate-900">
               Upload CV
             </h3>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-slate-600">
               Upload your CV to get started with AI-powered skill analysis.
             </p>
             <p className="mt-3 text-xs font-medium text-blue-600">
@@ -95,8 +95,8 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
               <svg
                 className="h-5 w-5"
                 fill="none"
@@ -111,10 +111,10 @@ export default function DashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="mt-4 font-semibold text-slate-900 dark:text-white">
+            <h3 className="mt-4 font-semibold text-slate-900">
               Learning Roadmap
             </h3>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-slate-600">
               Follow your personalized roadmap to close skill gaps.
             </p>
             <p className="mt-3 text-xs font-medium text-blue-600">
@@ -122,8 +122,8 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
               <svg
                 className="h-5 w-5"
                 fill="none"
@@ -138,10 +138,10 @@ export default function DashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="mt-4 font-semibold text-slate-900 dark:text-white">
+            <h3 className="mt-4 font-semibold text-slate-900">
               Job Matching
             </h3>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-slate-600">
               Get matched with jobs that fit your skills and readiness.
             </p>
             <p className="mt-3 text-xs font-medium text-blue-600">
