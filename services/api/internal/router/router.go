@@ -13,20 +13,23 @@ import (
 
 func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine {
 	r := gin.Default()
+	r.MaxMultipartMemory = 8 << 20 // 8 MB
 
 	// Middleware
 	r.Use(middleware.CORS())
 
 	// Repositories
 	userRepo := repository.NewUserRepository(db)
+	cvAnalysisRepo := repository.NewCVAnalysisRepository(db)
 
 	// Services
 	authService := service.NewAuthService(userRepo, cfg.JWTSecret)
+	cvAnalysisService := service.NewCVAnalysisService(cvAnalysisRepo, cfg.AIServiceURL)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler(db, rdb)
 	authHandler := handler.NewAuthHandler(authService)
-	aiProxyHandler := handler.NewAIProxyHandler(cfg.AIServiceURL)
+	cvAnalysisHandler := handler.NewCVAnalysisHandler(cvAnalysisService)
 
 	// Health check
 	r.GET("/health", healthHandler.Health)
@@ -46,10 +49,10 @@ func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine 
 		// User routes
 		protected.GET("/users/me", authHandler.GetCurrentUser)
 
-		// AI proxy routes
-		protected.POST("/ai/analyze-cv", aiProxyHandler.ProxyToAI)
-		protected.POST("/ai/generate-roadmap", aiProxyHandler.ProxyToAI)
-		protected.POST("/ai/match-jobs", aiProxyHandler.ProxyToAI)
+		// CV analysis routes
+		protected.POST("/ai/analyze-cv", cvAnalysisHandler.AnalyzeCV)
+		protected.GET("/ai/analyses", cvAnalysisHandler.GetAnalyses)
+		protected.GET("/ai/analyses/:id", cvAnalysisHandler.GetAnalysis)
 	}
 
 	return r

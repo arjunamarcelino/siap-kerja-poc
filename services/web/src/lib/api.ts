@@ -8,9 +8,14 @@ export async function apiFetch<T = unknown>(
   options?: RequestInit
 ): Promise<T> {
   const { headers: customHeaders, ...restOptions } = options ?? {};
+  const isFormData =
+    typeof FormData !== "undefined" && restOptions?.body instanceof FormData;
   const res = await fetch(`${API_URL}${path}`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...customHeaders },
+    headers: {
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...customHeaders,
+    },
     ...restOptions,
   });
   if (!res.ok) {

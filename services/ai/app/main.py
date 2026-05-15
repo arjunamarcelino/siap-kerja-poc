@@ -5,7 +5,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from app.routers import health
+from app.routers import analysis, health
 
 logger = logging.getLogger(__name__)
 
@@ -36,3 +36,4 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
 
 
 app.include_router(health.router)
+app.include_router(analysis.router)
