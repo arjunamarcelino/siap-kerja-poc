@@ -18,6 +18,16 @@ type ScrapedJob struct {
 	Description    string   `json:"description"`
 }
 
+// JobListing represents a row in the job_listings table.
+type JobListing struct {
+	ID             int      `json:"id" db:"id"`
+	Title          string   `json:"title" db:"title"`
+	Company        string   `json:"company" db:"company"`
+	Role           string   `json:"role" db:"role"`
+	RequiredSkills []string `json:"required_skills" db:"required_skills"`
+	Description    string   `json:"description" db:"description"`
+}
+
 // JobMatchResult is a single job's match details.
 type JobMatchResult struct {
 	Title           string   `json:"title"`

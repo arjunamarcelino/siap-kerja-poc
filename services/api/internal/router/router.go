@@ -23,12 +23,13 @@ func Setup(db *pgxpool.Pool, rdb *redis.Client, cfg *config.Config) *gin.Engine 
 	cvAnalysisRepo := repository.NewCVAnalysisRepository(db)
 	progressRepo := repository.NewRoadmapProgressRepository(db)
 	skillRepo := repository.NewSkillRepository(db)
+	jobListingRepo := repository.NewJobListingRepository(db)
 
 	// Services
 	authService := service.NewAuthService(userRepo, cfg.JWTSecret)
 	cvAnalysisService := service.NewCVAnalysisService(cvAnalysisRepo, cfg.AIServiceURL)
 	progressService := service.NewRoadmapProgressService(progressRepo, cvAnalysisRepo)
-	jobMatchingService := service.NewJobMatchingService(skillRepo, cvAnalysisRepo, progressRepo, cfg.AIServiceURL)
+	jobMatchingService := service.NewJobMatchingService(skillRepo, cvAnalysisRepo, progressRepo, jobListingRepo, cfg.AIServiceURL)
 
 	// Handlers
 	healthHandler := handler.NewHealthHandler(db, rdb)

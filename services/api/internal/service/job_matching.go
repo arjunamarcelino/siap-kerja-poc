@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"sort"
 	"strings"
 	"time"
@@ -21,24 +20,27 @@ import (
 var ErrNoCVAnalysis = errors.New("no CV analysis found")
 
 type JobMatchingService struct {
-	skillRepo    *repository.SkillRepository
-	cvRepo       *repository.CVAnalysisRepository
-	progressRepo *repository.RoadmapProgressRepository
-	aiServiceURL string
-	httpClient   *http.Client
+	skillRepo      *repository.SkillRepository
+	cvRepo         *repository.CVAnalysisRepository
+	progressRepo   *repository.RoadmapProgressRepository
+	jobListingRepo *repository.JobListingRepository
+	aiServiceURL   string
+	httpClient     *http.Client
 }
 
 func NewJobMatchingService(
 	skillRepo *repository.SkillRepository,
 	cvRepo *repository.CVAnalysisRepository,
 	progressRepo *repository.RoadmapProgressRepository,
+	jobListingRepo *repository.JobListingRepository,
 	aiServiceURL string,
 ) *JobMatchingService {
 	return &JobMatchingService{
-		skillRepo:    skillRepo,
-		cvRepo:       cvRepo,
-		progressRepo: progressRepo,
-		aiServiceURL: aiServiceURL,
+		skillRepo:      skillRepo,
+		cvRepo:         cvRepo,
+		progressRepo:   progressRepo,
+		jobListingRepo: jobListingRepo,
+		aiServiceURL:   aiServiceURL,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
@@ -102,14 +104,25 @@ func (s *JobMatchingService) ComputeJobMatches(ctx context.Context, userID strin
 
 	effectiveSkills := mergeEffectiveSkills(cvSkills, progressMap)
 
-	// Step 3: Fetch job listings from AI service
-	jobs, err := s.fetchJobs(ctx, latestAnalysis.CareerAspiration)
+	// Step 3: Fetch job listings from database
+	listings, err := s.jobListingRepo.GetByRole(ctx, latestAnalysis.CareerAspiration)
 	if err != nil {
-		return nil, fmt.Errorf("fetch jobs: %w", err)
+		return nil, fmt.Errorf("fetch job listings: %w", err)
 	}
 
-	if len(jobs) == 0 {
+	if len(listings) == 0 {
 		return &model.JobMatchResponse{Matches: []model.JobMatchResult{}}, nil
+	}
+
+	// Convert to ScrapedJob for embedding compatibility
+	jobs := make([]model.ScrapedJob, len(listings))
+	for i, l := range listings {
+		jobs[i] = model.ScrapedJob{
+			Title:          l.Title,
+			Company:        l.Company,
+			RequiredSkills: l.RequiredSkills,
+			Description:    l.Description,
+		}
 	}
 
 	// Step 4-5: Ensure all skills have embeddings
@@ -201,32 +214,6 @@ func normalizeSkills(skills []string) []string {
 		}
 	}
 	return result
-}
-
-func (s *JobMatchingService) fetchJobs(ctx context.Context, careerAspiration string) ([]model.ScrapedJob, error) {
-	reqURL := fmt.Sprintf("%s/scrape-jobs?role=%s", s.aiServiceURL, url.QueryEscape(careerAspiration))
-
-	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := s.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("AI service unavailable: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("AI service returned status %d", resp.StatusCode)
-	}
-
-	var jobs []model.ScrapedJob
-	if err := json.NewDecoder(resp.Body).Decode(&jobs); err != nil {
-		return nil, fmt.Errorf("parse jobs response: %w", err)
-	}
-
-	return jobs, nil
 }
 
 // ensureEmbeddings checks which skills are missing embeddings and generates them.
