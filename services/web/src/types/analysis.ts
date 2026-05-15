@@ -37,3 +37,31 @@ export interface AnalysisResult {
   career_aspiration: string;
   created_at: string;
 }
+
+export interface StepProgress {
+  skills_done: string[];
+  resources_done: number[];
+  completed_at: string | null;
+}
+
+export interface RoadmapProgressData {
+  progress: Record<string, StepProgress>;
+  progress_percentage: number;
+}
+
+interface ToggleRequestBase {
+  step: number;
+  done: boolean;
+}
+
+interface ToggleSkillRequest extends ToggleRequestBase {
+  type: "skill";
+  value: string;
+}
+
+interface ToggleResourceRequest extends ToggleRequestBase {
+  type: "resource";
+  index: number;
+}
+
+export type ToggleRequest = ToggleSkillRequest | ToggleResourceRequest;
